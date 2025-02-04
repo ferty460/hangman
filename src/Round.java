@@ -81,10 +81,17 @@ public class Round {
         if (!Character.isLetter(letter)) {
             throw new IllegalArgumentException("Неверный формат буквы");
         }
+        if (!isCyrillic(letter)) {
+            throw new IllegalArgumentException("Допускается только кириллица");
+        }
         if (usedLetters.contains(letter)) {
             throw new IllegalArgumentException("Буква уже использована");
         }
         usedLetters.add(letter);
+    }
+
+    private boolean isCyrillic(char letter) {
+        return (letter >= 'А' && letter <= 'я') || letter == 'ё' || letter == 'Ё';
     }
 
     private void unmaskWord(char letter) {
