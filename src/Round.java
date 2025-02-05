@@ -2,74 +2,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Round {
+
     private int numAttempts = 6;
     private final String word;
     private final List<Character> usedLetters = new ArrayList<>();
     private String maskedWord;
-
-    private static final String[] HANGMAN_STAGES = {
-            """
-        |
-        |
-        |
-        |
-        |
-        |
-        """,
-            """
-         ___
-        |/  |
-        |
-        |
-        |
-        |
-        |
-        """,
-            """
-         ___
-        |/  |
-        |   *
-        |
-        |
-        |
-        |
-        """,
-            """
-         ___
-        |/  |
-        |   *
-        |  /||
-        |
-        |
-        |
-        """,
-            """
-         ___
-        |/  |
-        |   *
-        |  /||
-        |   |
-        |
-        |
-        """,
-            """
-         ___
-        |/  |
-        |   *
-        |  /||
-        |   |
-        |  / \\
-        |
-        """
-    };
 
     public Round() {
         this.word = new WordGenerator("src\\words.txt").getWord();
         this.maskedWord = "*".repeat(word.length());
     }
 
-    public boolean isRightLetter(char letter) {
-        validateLetter(letter);
+    public boolean isRightLetter(String input) {
+        char letter = validateLetter(input);
         if (word.indexOf(letter) >= 0) {
             unmaskWord(letter);
             return true;
@@ -77,7 +22,15 @@ public class Round {
         return false;
     }
 
-    private void validateLetter(char letter) {
+    private char validateLetter(String input) {
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Пожалуйста, введите букву");
+        }
+        if (input.length() > 1) {
+            throw new IllegalArgumentException("Пожалуйста, введите только одну букву");
+        }
+
+        char letter = input.charAt(0);
         if (!Character.isLetter(letter)) {
             throw new IllegalArgumentException("Неверный формат буквы");
         }
@@ -88,6 +41,8 @@ public class Round {
             throw new IllegalArgumentException("Буква уже использована");
         }
         usedLetters.add(letter);
+
+        return letter;
     }
 
     private boolean isCyrillic(char letter) {
@@ -107,8 +62,21 @@ public class Round {
     public String getState() {
         return "Ваше слово: " + maskedWord +
                 "\nОставшиеся попытки: " + numAttempts +
-                (numAttempts < 6 ? "\n\n" + HANGMAN_STAGES[5 - numAttempts] : "") +
+                "\n" + getHangman() +
                 "\nИспользованные буквы: " + usedLetters;
+    }
+
+    private String getHangman() {
+        int numMistakes = 6 - numAttempts;
+        return switch (numMistakes) {
+            case 1 -> HangmanStages.ONE_MISTAKE_STAGE.getHangman();
+            case 2 -> HangmanStages.TWO_MISTAKES_STAGE.getHangman();
+            case 3 -> HangmanStages.THREE_MISTAKES_STAGE.getHangman();
+            case 4 -> HangmanStages.FOUR_MISTAKES_STAGE.getHangman();
+            case 5 -> HangmanStages.FIVE_MISTAKES_STAGE.getHangman();
+            case 6 -> HangmanStages.SIX_MISTAKES_STAGE.getHangman();
+            default -> "";
+        };
     }
 
     public int getNumAttempts() {

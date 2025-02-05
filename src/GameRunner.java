@@ -2,15 +2,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class GameRunner {
+
     private final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+    private final Printer printer = new Printer();
 
     public void run() {
         while (true) {
-            System.out.println("""
-                  Выберите действие:
-                    1. Начать игру
-                    2. Выйти
-                  """);
+            printer.displayActions();
             String action = scanner.nextLine();
 
             switch (action) {
@@ -18,7 +16,7 @@ public class GameRunner {
                 case "2" -> {
                     return;
                 }
-                default -> System.out.println("Ошибка! Попробуйте еще раз.");
+                default -> printer.displayError();
             }
         }
     }
@@ -26,31 +24,25 @@ public class GameRunner {
     private void play() {
         Round round = new Round();
         while (round.getNumAttempts() > 0) {
-            displayGameState(round);
-            char letter = getUserInput();
+            printer.displayGameState(round);
+            String letter = getUserInput();
 
             if (processLetter(round, letter)) {
-                System.out.println("Поздравляем! Вы угадали слово: " + round.getWord() + "\n");
+                printer.displayWinMessage(round);
                 return;
             }
         }
-        System.out.println("Игра окончена. Загаданное слово было: " + round.getWord() + "\n");
+        printer.displayDefeatMessage(round);
     }
 
-    private void displayGameState(Round round) {
-        System.out.println("----------------------------------------\n" +
-                round.getState() +
-                "\n\nВведите букву: ");
+    private String getUserInput() {
+        return scanner.nextLine().toLowerCase();
     }
 
-    private char getUserInput() {
-        return Character.toLowerCase(scanner.nextLine().charAt(0));
-    }
-
-    private boolean processLetter(Round round, char letter) {
+    private boolean processLetter(Round round, String letter) {
         try {
             boolean isRightLetter = round.isRightLetter(letter);
-            System.out.println(isRightLetter ? "\nВы угадали букву!\n" : "\nУпс, такой буквы нет!\n");
+            printer.displayLetterInfo(isRightLetter);
 
             if (!isRightLetter) {
                 round.minusAttempt();
@@ -61,4 +53,5 @@ public class GameRunner {
             return false;
         }
     }
+
 }
