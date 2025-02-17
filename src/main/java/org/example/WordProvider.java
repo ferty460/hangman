@@ -6,11 +6,11 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 
-public class WordGenerator {
+public class WordProvider {
 
     private final Random random = new Random();
 
-    public String generate() {
+    public String provide() {
         List<String> dictionary;
         String path = "src/main/resources/words.txt";
 
