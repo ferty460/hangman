@@ -4,19 +4,24 @@ import java.util.List;
 
 public class Printer {
 
-    public void printMenu() {
+    public void printGameMenu() {
         String menuActions = """
                 Выберите действие:
                 [1] - Начать игру
-                [2] - Выйти
-                """;
-        /*String menuActions = """ todo
-                Выберите действие:
-                [1] - Начать игру
                 [2] - Настройки
-                [3] - Статистика
                 [4] - Выйти
-                """;*/
+                """;
+        System.out.println(menuActions);
+    }
+
+    public void printSettingsMenu() {
+        String menuActions = """
+                Выберите действие:
+                [1] - Изменить сложность
+                [2] - Изменить словарь
+                [3] - Вернуть настройки по умолчанию
+                [4] - Назад
+                """;
         System.out.println(menuActions);
     }
 
@@ -38,6 +43,17 @@ public class Printer {
         System.out.println("Использованные буквы: " + usedLetters);
     }
 
+    public void printSettingsState(Settings settings) {
+        Difficult currentDifficult = settings.getDifficult();
+        String dictionaryFilePath = settings.getDictionaryFilePath().toString();
+        boolean isDefaultDictionary = "src\\main\\resources\\words.txt".equals(dictionaryFilePath);
+
+        System.out.println("\nВаш уровень сложности: " + currentDifficult.getName() +
+                " (" + currentDifficult.getDescription() + ")");
+        System.out.println("Ваш словарь: " +
+                (isDefaultDictionary ? "по умолчанию" : dictionaryFilePath) + "\n");
+    }
+
     public void printLetterPrompt() {
         System.out.println("Введите букву:");
     }
@@ -46,13 +62,27 @@ public class Printer {
         System.out.println("Вы угадали букву!\n");
     }
 
+    public void printDifficultPrompt() {
+        String menuActions = """
+                Выберите уровень сложности:
+                [1] - Легкий (Слова длиной от 5 до 6 символов)
+                [2] - Средний (Слова длиной от 7 до 9 символов)
+                [3] - Сложный (Слова длиной более 10 символов)
+                [4] - Назад
+                """;
+        System.out.println(menuActions);
+    }
+
+    public void printDictionaryFilePrompt() {
+        System.out.println("Введите абсолютный адрес файла со словарем (н/п, D:\\files\\words.txt)");
+    }
+
     public void printWrongLetterMessage() {
         System.out.println("К сожалению, такой буквы нет.\n");
     }
 
     public void printWrongInputError() {
-        String error = "Неверный ввод!\n";
-        System.out.println(error);
+        System.out.println("Неверный ввод!\n");
     }
 
     public void printGameResult(HiddenWord hiddenWord) {

@@ -1,30 +1,32 @@
 package org.example;
 
-import java.util.LinkedList;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Game {
 
-    private final int maxAttempts;
+    private final Settings settings;
     private final HiddenWord hiddenWord;
     private final List<Character> usedLetters;
 
-    private final Validator validator;
-    private final Printer printer;
+    private static final Validator validator = new Validator();
+    private static final Printer printer = new Printer();
 
-    public Game() {
-        String word = new WordProvider().provide();
-        this.maxAttempts = 6;
-        this.usedLetters = new LinkedList<>();
-        this.validator = new Validator(usedLetters);
-        this.printer = new Printer();
+    public Game(Settings settings) {
+        this.settings = settings;
+        this.usedLetters = new ArrayList<>();
+
+        Path file = settings.getDictionaryFilePath();
+        Difficult difficult = settings.getDifficult();
+        String word = new WordProvider(file, difficult).provide();
         this.hiddenWord = new HiddenWord(word);
     }
 
     public void loop() {
         Scanner scanner = new Scanner(System.in);
-        int attempts = maxAttempts;
+        int attempts = settings.maxAttempts;
 
         while (!hiddenWord.isWordGuessed() && attempts > 0) {
             printer.printGameState(attempts, hiddenWord, usedLetters);
@@ -32,7 +34,7 @@ public class Game {
 
             String input = scanner.nextLine();
             try {
-                validator.validateLetter(input);
+                validator.validateLetter(input, usedLetters);
             } catch (IllegalArgumentException e) {
                 System.out.println("Ошибка: " + e.getMessage() + "\n");
                 continue;
