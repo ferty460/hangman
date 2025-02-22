@@ -1,10 +1,12 @@
 package org.example;
 
+import org.example.core.GameLauncher;
+
 public class Main {
 
     public static void main(String[] args) {
-        Runner runner = new Runner();
-        runner.run();
+        GameLauncher launcher = new GameLauncher();
+        launcher.run();
     }
 
 }

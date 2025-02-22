@@ -1,6 +1,6 @@
-package org.example;
+package org.example.core;
 
-public enum Difficult {
+public enum Difficulty {
 
     EASY("Легкий", "Слова длиной от 5 до 6 символов"),
     MEDIUM("Средний", "Слова длиной от 7 до 9 символов"),
@@ -9,7 +9,7 @@ public enum Difficult {
     private final String name;
     private final String description;
 
-    Difficult(String name, String description) {
+    Difficulty(String name, String description) {
         this.name = name;
         this.description = description;
     }

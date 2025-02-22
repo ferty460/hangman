@@ -1,4 +1,10 @@
-package org.example;
+package org.example.core;
+
+import org.example.output.ConsolePrinter;
+import org.example.settings.Settings;
+import org.example.validation.LetterValidator;
+import org.example.validation.LetterValidatorImpl;
+import org.example.words.FileWordProvider;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -7,34 +13,37 @@ import java.util.Scanner;
 
 public class Game {
 
-    private final Settings settings;
     private final HiddenWord hiddenWord;
     private final List<Character> usedLetters;
+    private int attempts;
 
-    private static final Validator validator = new Validator();
-    private static final Printer printer = new Printer();
+    private final LetterValidator validator;
+    private final ConsolePrinter printer;
 
     public Game(Settings settings) {
-        this.settings = settings;
         this.usedLetters = new ArrayList<>();
+        this.attempts = settings.getMaxAttempts();
 
         Path file = settings.getDictionaryFilePath();
-        Difficult difficult = settings.getDifficult();
-        String word = new WordProvider(file, difficult).provide();
+        Difficulty difficulty = settings.getDifficulty();
+        String word = new FileWordProvider(file, difficulty).getRandomWord();
         this.hiddenWord = new HiddenWord(word);
+
+        validator = new LetterValidatorImpl();
+        printer = new ConsolePrinter();
     }
 
     public void loop() {
         Scanner scanner = new Scanner(System.in);
-        int attempts = settings.maxAttempts;
 
-        while (!hiddenWord.isWordGuessed() && attempts > 0) {
+        while (isRunning()) {
             printer.printGameState(attempts, hiddenWord, usedLetters);
             printer.printLetterPrompt();
 
             String input = scanner.nextLine();
             try {
-                validator.validateLetter(input, usedLetters);
+                validator.validate(input);
+                validator.checkLetterNotUsed(input.charAt(0), usedLetters);
             } catch (IllegalArgumentException e) {
                 System.out.println("Ошибка: " + e.getMessage() + "\n");
                 continue;
@@ -57,6 +66,10 @@ public class Game {
         }
 
         return attempts;
+    }
+
+    private boolean isRunning() {
+        return !hiddenWord.isWordGuessed() && attempts > 0;
     }
 
 }
