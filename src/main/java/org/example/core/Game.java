@@ -15,6 +15,8 @@ public class Game {
 
     private final HiddenWord hiddenWord;
     private final List<Character> usedLetters;
+    private final Settings settings;
+    private final Statistics statistics;
     private int attempts;
 
     private final LetterValidator validator;
@@ -22,7 +24,9 @@ public class Game {
 
     public Game(Settings settings) {
         this.usedLetters = new ArrayList<>();
+        this.settings = settings;
         this.attempts = settings.getMaxAttempts();
+        statistics = new Statistics();
 
         Path file = settings.getDictionaryFilePath();
         Difficulty difficulty = settings.getDifficulty();
@@ -35,6 +39,7 @@ public class Game {
 
     public void loop() {
         Scanner scanner = new Scanner(System.in);
+        long startTime = System.currentTimeMillis();
 
         while (isRunning()) {
             printer.printGameState(attempts, hiddenWord, usedLetters);
@@ -53,6 +58,10 @@ public class Game {
             usedLetters.add(letter);
             attempts = processUserGuess(hiddenWord, letter, attempts);
         }
+
+        long endTime = System.currentTimeMillis();
+        boolean won = hiddenWord.isWordGuessed();
+        statistics.recordGame(won, settings.getMaxAttempts() - attempts, endTime - startTime);
 
         printer.printGameResult(hiddenWord);
     }

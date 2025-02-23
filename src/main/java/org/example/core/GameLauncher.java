@@ -30,16 +30,13 @@ public class GameLauncher {
             switch (action) {
                 case "1" -> new Game(settings).loop();
                 case "2" -> settingsUI.showActionMenu(settings);
-                case "3" -> showStatistics();
+                case "3" -> new Statistics().printStats();
                 case "4" -> {
                     return;
                 }
                 default -> printer.printWrongInputError();
             }
         }
-    }
-
-    private void showStatistics() {
     }
 
 }
