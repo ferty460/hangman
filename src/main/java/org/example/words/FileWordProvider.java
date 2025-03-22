@@ -1,6 +1,6 @@
 package org.example.words;
 
-import org.example.core.Difficulty;
+import org.example.difficulty.Difficulty;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,16 +11,14 @@ import java.util.Random;
 public class FileWordProvider implements WordSource {
 
     private final Path dictionaryFilePath;
-    private List<String> dictionary;
     private final Difficulty difficulty;
-
     private final Random random;
+    private List<String> dictionary;
 
     public FileWordProvider(Path dictionaryFilePath, Difficulty difficulty) {
         this.dictionaryFilePath = dictionaryFilePath;
         this.difficulty = difficulty;
-
-        random = new Random();
+        this.random = new Random();
         loadDictionary();
     }
 
@@ -33,20 +31,9 @@ public class FileWordProvider implements WordSource {
         try {
             dictionary = Files.readAllLines(dictionaryFilePath);
         } catch (IOException e) {
-            dictionary = List.of("акула", "рюкзак", "тетрадь", "шимпанзе", "клавиатура", "человеконенавистничество");
-            throw new RuntimeException("Ошибка чтения словаря: " + e.getMessage());
+            throw new RuntimeException("Error loading dictionary: " + e.getMessage());
         }
-        dictionary = filterDictionaryByDifficult(dictionary, difficulty);
-    }
-
-    private List<String> filterDictionaryByDifficult(List<String> dictionary, Difficulty difficulty) {
-        return dictionary.stream()
-                .filter(word -> switch (difficulty) {
-                    case EASY -> word.length() >= 5 && word.length() <= 6;
-                    case MEDIUM -> word.length() >= 7 && word.length() <= 9;
-                    case HARD -> word.length() >= 10;
-                })
-                .toList();
+        dictionary = difficulty.filterWords(dictionary);
     }
 
 }

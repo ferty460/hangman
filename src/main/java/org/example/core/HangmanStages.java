@@ -1,8 +1,10 @@
 package org.example.core;
 
-public enum HangmanStage {
+public class HangmanStages {
 
-    STAGE_1("""
+    private static final String[] STAGES = {
+            "",
+            """
             ________
             |      |
             |
@@ -10,26 +12,26 @@ public enum HangmanStage {
             |
             |
             ********
-            """),
-    STAGE_2("""
-            ________
-            |      |
-            |      0
-            |
-            |
-            |
-            ********
-            """),
-    STAGE_3("""
+            """,
+            """
             ________
             |      |
             |      0
+            |
+            |
+            |
+            ********
+            """,
+            """
+            ________
+            |      |
+            |      0
             |      |
             |
             |
             ********
-            """),
-    STAGE_4("""
+            """,
+            """
             ________
             |      |
             |      0
@@ -37,8 +39,8 @@ public enum HangmanStage {
             |
             |
             ********
-            """),
-    STAGE_5("""
+            """,
+            """
             ________
             |      |
             |      0
@@ -46,24 +48,23 @@ public enum HangmanStage {
             |
             |
             ********
-            """),
-    STAGE_6("""
+            """,
+            """
             ________
             |      |
             |      0
             |     /|\\
-            |     / \\
+            |     /
             |
-            ********""");
+            ********
+            """
+    };
 
-    private final String hangman;
-
-    HangmanStage(String hangman) {
-        this.hangman = hangman;
+    private HangmanStages() {
     }
 
-    public String getHangman() {
-        return hangman;
+    public static String get(int numStage) {
+        return STAGES[numStage];
     }
 
 }

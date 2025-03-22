@@ -4,20 +4,22 @@ import java.io.File;
 
 public class FileValidator implements Validator<String> {
 
+    private static final String FILE_EXTENSION = ".txt";
+
     @Override
     public void validate(String file) {
         File filePath = new File(file);
         if (!filePath.exists()) {
-            throw new IllegalArgumentException("Такой файл не существует");
+            throw new IllegalArgumentException("Such a file does not exist");
         }
         if (!filePath.isAbsolute()) {
-            throw new IllegalArgumentException("Путь должен быть абсолютными (пример: E:\\files\\words.txt)");
+            throw new IllegalArgumentException("The path must be absolute (example: E:\\files\\words.txt)");
         }
         if (!filePath.isFile()) {
-            throw new IllegalArgumentException("Пожалуйста, введите адрес файла");
+            throw new IllegalArgumentException("Please enter the file address.");
         }
-        if (!filePath.toString().endsWith(".txt")) {
-            throw new IllegalArgumentException("Файл должен быть с расширением .txt");
+        if (!filePath.toString().endsWith(FILE_EXTENSION)) {
+            throw new IllegalArgumentException("The file must have the extension .txt");
         }
     }
 

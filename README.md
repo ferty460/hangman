@@ -19,15 +19,19 @@
 ## Запуск проекта
 
 ### 1. Убедитесь, что у вас установлен JDK и Maven
-   
-> java -version \
-> mvn -version
+
+```
+java -version
+mvn -version
+```
 
 Если Maven не установлен, установите его.
 
 ### 2. Измените кодировку консоли на UTF-8
 
-> chcp 65001
+```
+chcp 65001
+```
 
 ### 3. Перейдите в директорию проекта
 
@@ -36,8 +40,12 @@
 
 ### 4. Скомпилируйте проект с помощью Maven
 
-> mvn clean compile
+```
+mvn clean compile
+```
 
 ### 5. Запустите проект
 
-> mvn exec:java -Dexec.mainClass="org.example.Main"
+```
+mvn exec:java -Dexec.mainClass="org.example.Main"
+```
